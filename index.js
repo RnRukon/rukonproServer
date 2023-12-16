@@ -6,6 +6,7 @@ const databaseConnection = require('./src/database/databaseConnection');
 const schema = require('./src/graphQL/userSchema/userSchema');
 const rootResolver = require('./src/rootResolver/rootResolver');
 const authenticateJWT = require('./src/middleware/authenticateJWT');
+const graphqlRouter=require("./src/routes/routes")
 const app = express();
 
 // database connection
@@ -20,18 +21,10 @@ databaseConnection()
 app.use(authenticateJWT)
 
 
-app.use((req, res) => {
-    res.status(200).send(
-        `<h1>Welcome to my Portfolio</h1>`
-    )
-})
+
 
 // graphql route
-app.use('/graphql', graphqlHTTP(() => ({
-    schema: schema,
-    rootValue: rootResolver,
-    graphiql: true,
-})));
+app.use(graphqlRouter);
 
 
 const PORT = process.env.PORT || 3000;

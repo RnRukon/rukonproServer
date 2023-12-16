@@ -5,9 +5,6 @@ const User = require("../Models/userModel");
 const { tokenGenerator } = require('../helpers/tokenGanaret');
 
 
-
-
-
 exports.userRegisterController = async ({ username, email, password }) => {
     try {
         const user = new User({ username, email, password });
@@ -21,19 +18,16 @@ exports.userRegisterController = async ({ username, email, password }) => {
 
 exports.userLoginController = async ({ email, password }) => {
     try {
-        if (!email||!password) {
-            throw new Error('Input your email and password');
-        }
         const user = await User.findOne({ email });
-        if (!user) {
-            throw new Error('User not found');
-        }
+                    if (!user) {
+                        return  new Error('User not found');
+                    }
 
         const passwordMatch = await bcrypt.compare(password, user?.password);
 
         if (!passwordMatch) {
-            throw new Error('Incorrect password');
-        };
+            return  new Error('Incorrect password');
+        }
         const options = { userId: user._id, email: user.email, username: user.username };
         const token = tokenGenerator(options);
         return { user, token };
