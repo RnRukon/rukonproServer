@@ -2,13 +2,13 @@ const bcrypt = require('bcrypt');
 
 
 const User = require("../Models/userModel");
-const { tokenGanaretor } = require('../helpers/tokenGanaret');
+const { tokenGenerator } = require('../helpers/tokenGanaret');
 
 
 
 
 
-exports.userRegisterContoller = async ({ username, email, password }) => {
+exports.userRegisterController = async ({ username, email, password }) => {
     try {
         const user = new User({ username, email, password });
         await user.save();
@@ -19,8 +19,11 @@ exports.userRegisterContoller = async ({ username, email, password }) => {
 }
 
 
-exports.userLoginContoller = async ({ email, password }) => {
+exports.userLoginController = async ({ email, password }) => {
     try {
+        if (!email||!password) {
+            throw new Error('Input your email and password');
+        }
         const user = await User.findOne({ email });
         if (!user) {
             throw new Error('User not found');
@@ -31,23 +34,22 @@ exports.userLoginContoller = async ({ email, password }) => {
         if (!passwordMatch) {
             throw new Error('Incorrect password');
         };
-        const optons = { userId: user._id, email: user.email, username: user.username };
-        const token = tokenGanaretor(optons);
+        const options = { userId: user._id, email: user.email, username: user.username };
+        const token = tokenGenerator(options);
         return { user, token };
     } catch (error) {
         throw new Error(error);
     }
 }
 
-exports.getMeContoller = async (args, req) => {
+exports.getMeController = async (args, req) => {
 
     try {
-        
         if (!req.isAuth) {
             throw new Error('Unauthenticated!');
         }
 
-        const user = await User.findOne(req._id);
+        const user = await User.findOne({_id:req._id});
 
         if (!user) {
             throw new Error('User not found');

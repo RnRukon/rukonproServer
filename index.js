@@ -8,19 +8,25 @@ const rootResolver = require('./src/rootResolver/rootResolver');
 const authenticateJWT = require('./src/middleware/authenticateJWT');
 const app = express();
 
-// database connnection 
+// database connection
 databaseConnection()
+    .then(()=>{
+      console.log("Database connected");
+    }).catch(error=>{
+        throw new Error(error)
+})
 
-
+//user authenticated with TWT
 app.use(authenticateJWT)
 
 
-app.use("/", (req, res) => {
+app.use((req, res) => {
     res.status(200).send(
         `<h1>Welcome to my Portfolio</h1>`
     )
 })
 
+// graphql route
 app.use('/graphql', graphqlHTTP(() => ({
     schema: schema,
     rootValue: rootResolver,

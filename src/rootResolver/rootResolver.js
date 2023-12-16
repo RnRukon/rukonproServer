@@ -1,5 +1,5 @@
 const { projectTitle } = require("../contollers/projectController");
-const { userRegisterContoller: userRegister, userLoginContoller: userLogin, getMeContoller } = require("../contollers/userController");
+const { userRegisterController: userRegister, userLoginController: userLogin, getMeController } = require("../contollers/userController");
 
 
 
@@ -7,7 +7,7 @@ const rootResolver = {
     projectName: projectTitle,
     registerUser: userRegister,
     loginUser: userLogin,
-    me: getMeContoller
+    me: getMeController
 };
 
 
