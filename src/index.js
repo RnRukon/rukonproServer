@@ -1,12 +1,10 @@
 // index.js
 const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
+const serverless = require("serverless-http");
 require("dotenv").config();
-const databaseConnection = require('./src/database/databaseConnection');
-const schema = require('./src/graphQL/userSchema/userSchema');
-const rootResolver = require('./src/rootResolver/rootResolver');
-const authenticateJWT = require('./src/middleware/authenticateJWT');
-const graphqlRouter=require("./src/routes/routes")
+const databaseConnection = require('./database/databaseConnection');
+const authenticateJWT = require('./middleware/authenticateJWT');
+const graphqlRouter=require("./routes/routes")
 const app = express();
 
 // database connection
@@ -26,8 +24,8 @@ app.use(authenticateJWT)
 // graphql route
 app.use(graphqlRouter);
 
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+module.exports.handler = serverless(app);
